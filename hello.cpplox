@@ -1,0 +1,116 @@
+var test = "test";
+
+print test + " beet";
+
+fun neat(obj)
+{
+    obj.printName();
+    print obj.name;
+}
+
+class ingredient
+{
+    init(name)
+    {
+        this.name = name;
+    }
+
+    printName()
+    {
+        print "base: " + this.name;
+    }
+}
+
+class food < ingredient
+{
+    init(name)
+    {
+        this.name = name;
+    }
+
+    printName()
+    {
+        print "derived: " + this.name;
+    }
+}
+
+
+var turkey = food("turkey");
+var turkey2 = ingredient("turkey2");
+
+print turkey;
+print turkey2;
+
+neat(turkey);
+neat(turkey2);
+
+var num = 1.91232;
+var fraction = 1 / 3;
+print num;
+print fraction;
+
+if (num == 1.91232)
+{
+    print "equal";
+}
+else
+{
+    print "unequal";
+}
+
+if (fraction == 0.33)
+{
+    print "kind of match";
+}
+else if (fraction == 1/3)
+{
+    print "match";
+}
+else
+{
+    print "does not match";
+}
+
+if (false)
+{
+    print false;
+}
+else if (true)
+{
+    print true;
+}
+else
+{
+    print "neither";
+}
+
+fun returnFunction() {
+    var outside = "outside";
+
+    fun inner() {
+        print outside;
+    }
+
+    //why is inner not a function call inner()?
+    return inner;
+}
+
+var fn = returnFunction();
+fn();
+
+fun addPair(a, b) {
+  return a + b;
+}
+
+fun identity(a) {
+  return a;
+}
+
+//why is identity(addPair)(1, 2); allowed also?
+print identity(addPair(1, 2)); // Prints "3".
+
+//edge cases (potentially)
+//1. must include number before decimal point (not exptected)
+//2. no virtual or overwrite of functions from derived to base (exptected)
+//3. printing objects just prints the class it came from and that it's an instance
+//4. no end line characters
