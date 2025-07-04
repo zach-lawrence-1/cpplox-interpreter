@@ -204,6 +204,20 @@ void Scanner::scanToken()
                     advance();
                 }
             }
+            else if (match('*'))
+            {
+                while ((peekChar() != '*' || peekNextChar() != '/') && m_current < int(m_source.length()))
+                {
+                    advance();
+                }
+
+                //collect multiline comment ending
+                if (m_current < int(m_source.length()))
+                {
+                    advance();
+                    advance();
+                }
+            }
             else
             {
                 addToken(TOKEN_SLASH);
