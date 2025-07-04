@@ -114,17 +114,3 @@ print identity(addPair(1, 2)); // Prints "3".
 //2. no virtual or overwrite of functions from derived to base (exptected)
 //3. printing objects just prints the class it came from and that it's an instance
 //4. no end line characters
-
-/* testing * * */
-
-/*
-
-test
-
-why
-
-multiline
-
-comment
-
-*/
