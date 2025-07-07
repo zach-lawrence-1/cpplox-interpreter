@@ -8,9 +8,9 @@
 
 extern bool errorExists;
 
-extern void report(int line, std::string where, std::string message);
-extern void error(int line, std::string message);
-extern void run(std::string allFileData);
+extern void report(const int& line, const std::string& where, const std::string& message);
+extern void error(const int& line, const std::string& message);
+extern void run(const std::string& allFileData);
 extern void promptCode();
 extern void runFile(const std::string &file);
 

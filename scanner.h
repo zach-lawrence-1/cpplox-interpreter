@@ -100,20 +100,19 @@ class Scanner
         int m_line = 1;
 
     public:
-        Scanner(std::string source);
+        Scanner(const std::string& source);
         std::vector<Token> scanTokens();
         void scanToken();
         char advance();
-        void addToken(TokenType type);
         void addToken(TokenType type, std::string stringValue);
-        bool match(char expected);
+        bool match(const char& expected);
         char peekChar();
         char peekNextChar();
         void processString();
-        bool isDigit(char character);
+        bool isDigit(const char& character);
         void processNumber();
-        bool isAlpha(char character);
-        bool isAlphaNumeric(char character);
+        bool isAlpha(const char& character);
+        bool isAlphaNumeric(const char& character);
         void processIdentifier();
 };
 
