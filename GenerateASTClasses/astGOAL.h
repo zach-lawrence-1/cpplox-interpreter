@@ -1,7 +1,7 @@
 #ifndef AST
 #define AST
 
-#include "../scanner.h"
+#include "scanner.h"
 
 template<typename T>
 class Binary;
@@ -25,7 +25,7 @@ class Visitor
         virtual T visitUnaryExpr(Unary<T>& expr) = 0;
 };
 
-template <typename T>
+template<typename T>
 class Expr
 {
     public:
@@ -35,32 +35,47 @@ class Expr
 template<typename T>
 class Binary : public Expr<T>
 {
+    private:
+        const Expr<T> m_left;
+        const Token m_oper;
+        const Expr<T> m_right;
+
     public:
-        Binary (Expr<T> left, Token oper, Expr<T> right);
+        Binary(Expr<T> left, Token oper, Expr<T> right);
         T accept(Visitor<T>& visitor) override;
 };
 
 template<typename T>
 class Grouping : public Expr<T>
 {
+    private:
+        const Expr<T> m_expression;
+
     public:
-        Grouping (Expr<T> expression);
+        Grouping(Expr<T> expression);
         T accept(Visitor<T>& visitor) override;
 };
 
 template<typename T>
 class Literal : public Expr<T>
 {
+    private:
+        const T m_value;
+
     public:
-        Literal (T value);
+        Literal(T value);
         T accept(Visitor<T>& visitor) override;
 };
 
 template<typename T>
 class Unary : public Expr<T>
 {
+    private:
+        const Token m_oper;
+        const Expr<T> m_right;
+
     public:
-        Unary (Token oper, Expr<T> right);
+        Unary(Token oper, Expr<T> right);
         T accept(Visitor<T>& visitor) override;
 };
 

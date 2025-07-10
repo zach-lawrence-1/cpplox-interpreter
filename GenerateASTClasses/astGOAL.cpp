@@ -1,4 +1,4 @@
-#include "ast.h"
+#include "astGOAL.h"
 
 template<typename T>
 Binary<T>::Binary(Expr<T> left, Token oper, Expr<T> right)
