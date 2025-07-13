@@ -66,6 +66,7 @@ class Token
         int m_line;
 
     public:
+        Token() = default;
         Token(TokenType type, std::string lexeme, int line);
         std::string getLexeme();
         TokenType getType();
