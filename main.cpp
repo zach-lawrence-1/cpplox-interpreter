@@ -30,20 +30,18 @@ int main(int argc, char* argv[])
 //NOTE: temporary main function for testing ast implementation
 int main()
 {
-    //TODO: make copy operator for Token
+    //TODO: rewrite to not use templates or something
     //TODO: figure out how to make this easier to do (maybe use unique pointer or dynamic memory)
     //TODO: get this to work with other kinds of types instead of just std::string
 
-    std::string ttest = "123";
-    std::string num = "45.67";
-    Literal<std::string> L(&ttest);
-    Literal<std::string> R(&num);
+    Literal<int> L(123);
+    Literal<float> R(45.67f);
 
-    Unary<std::string> u(Token(TOKEN_MINUS, "-", 1), &L);
+    Unary<int> u(Token(TOKEN_MINUS, "-", 1), L);
     Token t(TOKEN_STAR, "*", 1);
-    Grouping<std::string> g(&R);
+    Grouping<float> g(R);
     
-    Binary<std::string> expression(&u, t, &g);
+    Binary<std::string, int, float> expression(u, t, g);
 
-    std::cout << AstPrinter<std::string>().printExpression(&expression) << std::endl;
+    std::cout << AstPrinter<std::string, int, float>().printExpression(expression) << std::endl;
 }

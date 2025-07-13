@@ -3,3 +3,4 @@ interpreter.exe
 .vscode
 GenerateASTClasses/generateAST
 GenerateASTClasses/generateAST.exe
+template errors.PNG
