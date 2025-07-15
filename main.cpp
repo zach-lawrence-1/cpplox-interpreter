@@ -30,18 +30,16 @@ int main(int argc, char* argv[])
 //NOTE: temporary main function for testing ast implementation
 int main()
 {
-    //TODO: rewrite to not use templates or something
-    //TODO: figure out how to make this easier to do (maybe use unique pointer or dynamic memory)
-    //TODO: get this to work with other kinds of types instead of just std::string
+    std::string test = "123";
+    InterpreterObject firstObject(test);
+    InterpreterObject secondObject(1);
 
-    Literal<int> L(123);
-    Literal<float> R(45.67f);
+    Literal L(firstObject);
+    Literal R(secondObject);
+    Unary u(Token(TOKEN_MINUS, "-", 1), L);
+    Grouping g(R);
+    Binary expression(u, Token(TOKEN_STAR, "*", 1), g);
+    Binary expression2(expression, Token(TOKEN_STAR, "*", 1), g);
 
-    Unary<int> u(Token(TOKEN_MINUS, "-", 1), L);
-    Token t(TOKEN_STAR, "*", 1);
-    Grouping<float> g(R);
-    
-    Binary<std::string, int, float> expression(u, t, g);
-
-    std::cout << AstPrinter<std::string, int, float>().printExpression(expression) << std::endl;
+    std::cout << AstPrinter().printExpression(expression2) << std::endl;
 }
