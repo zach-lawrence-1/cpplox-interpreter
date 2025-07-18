@@ -2,97 +2,119 @@
 #include <string>
 #include <array>
 #include <fstream>
+#include <vector>
 
-void defineType(std::ofstream& outputFile, const std::string& baseClassName, 
-                const std::string& derivedClassName, const std::string& derivedClassMembers)
+using VariablePair = std::pair<std::string, std::string>;
+
+static const int number_Of_Class_Types = 4;
+static const int max_Class_Member_Amount = 3;
+
+void addDerivedDataIntoVector(const std::array<std::string, number_Of_Class_Types>& types,
+                             std::array<std::string, number_Of_Class_Types>& derivedClassNames,
+                             std::vector<std::vector<VariablePair>>& derivedClassMembers)
 {
-    outputFile << "template<typename T>\n";
-    outputFile << "class " + derivedClassName + " : public " + baseClassName + "<T>\n{\n";
-    outputFile << "    private:\n";
-    std::string tempString = "";
-
-    //TODO: try to refactor this into a function
-    for (int i = 0; i < int(derivedClassMembers.length()); i++)
+    for (size_t i = 0; i < types.size(); i++)
     {
-        if (derivedClassMembers[i] == ',')
-        {
-            int spaceIndex = tempString.find(' ');
-            std::string type = tempString.substr(0, spaceIndex);
-            std::string variableName = tempString.substr(spaceIndex + 1, tempString.length() - spaceIndex);
+        size_t colonPosition = types[i].find(":");
+        derivedClassNames[i] = types[i].substr(0, colonPosition - 1);
+        std::string derivedClassMembersString = types[i].substr(colonPosition + 2, types[i].length() - colonPosition);
+        std::string memberString = "";
 
-            outputFile << "        const " + type + " m_" + variableName + ";\n";
-            tempString = "";
-            i++;
-        }
-        else
+        for (size_t k = 0; k < derivedClassMembersString.length(); k++)
         {
-            tempString.push_back(derivedClassMembers[i]);
+            if (k == derivedClassMembersString.length() - 1)
+            {
+                memberString.push_back(derivedClassMembersString[k]);
+            }
+
+            if (derivedClassMembersString[k] == ',' || k == derivedClassMembersString.length() - 1)
+            {
+                int spaceIndex = memberString.find(' ');
+                std::string variableType = memberString.substr(0, spaceIndex);
+                std::string variableName = memberString.substr(spaceIndex + 1, memberString.length() - spaceIndex);
+                VariablePair variablePair(variableType, variableName);
+                derivedClassMembers[i].push_back(variablePair);
+                memberString = "";
+                k++;
+            }
+            else
+            {
+                memberString.push_back(derivedClassMembersString[k]);
+            }
         }
     }
+}
 
-    int spaceIndex = tempString.find(' ');
-    std::string type = tempString.substr(0, spaceIndex);
-    std::string variableName = tempString.substr(spaceIndex + 1, tempString.length() - spaceIndex);
+std::string derivedClassConstructorParameters(const std::vector<VariablePair>& derivedClassMembers)
+{
+    std::string constructorParameters = "";
+    
+    for (VariablePair varPair : derivedClassMembers)
+    {
+        constructorParameters.append(varPair.first + "& " + varPair.second + ", ");
+    }
 
-    outputFile << "        const " + type + " m_" + variableName + ";\n";
+    constructorParameters = constructorParameters.substr(0, constructorParameters.length() - 2);
+
+    return constructorParameters;
+}
+
+void defineType(std::ofstream& outputFile, const std::string& baseClassName,
+                const std::string& derivedClassName, const std::vector<VariablePair>& derivedClassMembers)
+{
+    outputFile << "class " + derivedClassName + " : public " + baseClassName + "\n{\n";
+    outputFile << "    public:\n";
+    
+    for (VariablePair varPair : derivedClassMembers)
+    {
+        if (varPair.first == "InterpreterObject")
+            outputFile << "        " + varPair.first + " m_" + varPair.second + ";\n";
+        else
+            outputFile << "        " + varPair.first + "* m_" + varPair.second + ";\n";
+    }
+
     outputFile << "\n    public:\n";
-    outputFile << "        " + derivedClassName + "(" + derivedClassMembers + ");\n";
-    outputFile << "        T accept(Visitor<T>& visitor) override;\n";
+    outputFile << "        " + derivedClassName + "(" + derivedClassConstructorParameters(derivedClassMembers) + ");\n";
+    outputFile << "        InterpreterObject accept(Visitor& visitor) override;\n";
     outputFile << "};\n\n";
 }
 
-void defineVisitor(std::ofstream& outputFile, const std::string& baseClassName, const std::array<std::string, 4>& types)
+void defineVisitor(std::ofstream& outputFile, const std::string& baseClassName, 
+                    const std::array<std::string, number_Of_Class_Types>& derivedClassNames)
 {
-    outputFile << "template<typename T>\n";
     outputFile << "class Visitor\n{\n";
     outputFile << "    public:\n";
 
-    for (std::string type : types)
+    for (std::string derivedClassName : derivedClassNames)
     {
-        std::size_t colonPosition = type.find(":");
-        std::string derivedClassName = type.substr(0, colonPosition - 1);
-        outputFile << "        virtual T visit" + derivedClassName + baseClassName + "(" + derivedClassName + "<T>& expr) = 0;\n";
+        outputFile << "        virtual InterpreterObject visit" + derivedClassName + baseClassName + "(" + derivedClassName + "& expr) = 0;\n";
     }
 
     outputFile << "};\n\n";
 }
 
-void defineDerivedFunctions(std::ofstream& outputFile, const std::string& baseClassName, const std::string& derivedClassName, const std::string& derivedClassMembers)
+void defineDerivedFunctions(std::ofstream& outputFile, const std::string& baseClassName, 
+                            const std::string& derivedClassName, const std::vector<VariablePair>& derivedClassMembers)
 {
-    outputFile << "template<typename T>\n";
-    outputFile << derivedClassName + "<T>::" + derivedClassName + "(" + derivedClassMembers + ")\n{\n";
-    std::string tempString = "";
-
-    for (int i = 0; i < int(derivedClassMembers.length()); i++)
+    outputFile << derivedClassName + "::" + derivedClassName + "(" + derivedClassConstructorParameters(derivedClassMembers) + ")\n{\n";
+    
+    for (VariablePair varPair : derivedClassMembers)
     {
-        if (derivedClassMembers[i] == ',')
-        {
-            int spaceIndex = tempString.find(' ');
-            std::string variableName = tempString.substr(spaceIndex + 1, tempString.length() - spaceIndex);
-
-            outputFile << "    m_" + variableName + " = " + variableName + ";\n";
-            tempString = "";
-            i++;
-        }
+        if (varPair.first == "InterpreterObject")
+            outputFile << "    m_" + varPair.second + " = " + varPair.second + ";\n";
         else
-        {
-            tempString.push_back(derivedClassMembers[i]);
-        }
+            outputFile << "    m_" + varPair.second + " = &" + varPair.second + ";\n";
     }
 
-    int spaceIndex = tempString.find(' ');
-    std::string variableName = tempString.substr(spaceIndex + 1, tempString.length() - spaceIndex);
-    outputFile << "    m_" + variableName + " = " + variableName + ";\n";
-
     outputFile << "}\n\n";
-    outputFile << "template<typename T>\n";
-    outputFile << "T " + derivedClassName + "<T>::accept" +  + "(Visitor<T>& visitor)\n{\n";
-    outputFile << "    return visitor.visit" + derivedClassName + baseClassName + "(this);\n}\n\n";
+    outputFile << "InterpreterObject " + derivedClassName + "::accept" + +"(Visitor& visitor)\n{\n";
+    outputFile << "    return visitor.visit" + derivedClassName + baseClassName + "(*this);\n}\n\n";
 }
 
-void defineAstHeader(const std::string& outputDir, 
-               const std::string& baseClassName, 
-               const std::array<std::string, 4>& types)
+void defineAstHeader(const std::string& outputDir,
+                     const std::string& baseClassName,
+                     const std::array<std::string, number_Of_Class_Types>& derivedClassNames,
+                     const std::vector<std::vector<VariablePair>>& derivedClassMembers)
 {
     std::string headerPath = outputDir + "/ast.h";
     std::ofstream outputFile;
@@ -101,37 +123,32 @@ void defineAstHeader(const std::string& outputDir,
     if (outputFile.is_open())
     {
         outputFile << "#ifndef AST\n#define AST\n\n";
-        outputFile << "#include \"scanner.h\"\n\n";
+        outputFile << "#include \"scanner.h\"\n";
+        outputFile << "#include \"interpreterObject.h\"\n\n";
 
         //forward declare derived classes
-        for (std::string type : types)
+        for (std::string derivedClassName : derivedClassNames)
         {
-            std::size_t colonPosition = type.find(":");
-            std::string derivedClassName = type.substr(0, colonPosition - 1);
-            outputFile << "template<typename T>\n";
-            outputFile << "class " + derivedClassName + ";\n\n";
+            outputFile << "class " + derivedClassName + ";\n";
         }
 
-        defineVisitor(outputFile, baseClassName, types);
+        outputFile << "\n";
+        defineVisitor(outputFile, baseClassName, derivedClassNames);
 
         //define base class
-        outputFile << "template<typename T>\n";
         outputFile << "class " + baseClassName + "\n{\n";
         outputFile << "    public:\n";
-        outputFile << "        virtual T accept(Visitor<T>& visitor) = 0;\n";
+        outputFile << "        virtual InterpreterObject accept(Visitor& visitor) = 0;\n";
         outputFile << "};\n\n";
 
         //define derived classes
-        for (std::string type : types)
+        for (size_t i = 0; i < number_Of_Class_Types; i++)
         {
-            std::size_t colonPosition = type.find(":");
-            std::string derivedClassName = type.substr(0, colonPosition - 1);
-            std::string derivedClassMembers = type.substr(colonPosition + 2, type.length() - colonPosition);
-            defineType(outputFile, baseClassName, derivedClassName, derivedClassMembers);
+            defineType(outputFile, baseClassName, derivedClassNames[i], derivedClassMembers[i]);
         }
 
         outputFile << "#endif";
-    } 
+    }
     else
     {
         std::cerr << "Error could not open file!" << std::endl;
@@ -141,8 +158,9 @@ void defineAstHeader(const std::string& outputDir,
 }
 
 void defineAstCpp(const std::string& outputDir,
-               const std::string& baseClassName,
-               const std::array<std::string, 4>& types)
+                  const std::string& baseClassName,
+                  const std::array<std::string, number_Of_Class_Types>& derivedClassNames,
+                  const std::vector<std::vector<VariablePair>> derivedClassMembers)
 {
     std::string cppPath = outputDir + "/ast.cpp";
     std::ofstream outputFile;
@@ -151,14 +169,11 @@ void defineAstCpp(const std::string& outputDir,
     if (outputFile.is_open())
     {
         outputFile << "#include \"ast.h\"\n\n";
-        
+
         //define derived member functions and constructors
-        for (std::string type : types)
+        for (size_t i = 0; i < number_Of_Class_Types; i++)
         {
-            std::size_t colonPosition = type.find(":");
-            std::string derivedClassName = type.substr(0, colonPosition - 1);
-            std::string derivedClassMembers = type.substr(colonPosition + 2, type.length() - colonPosition);
-            defineDerivedFunctions(outputFile, baseClassName, derivedClassName, derivedClassMembers);
+            defineDerivedFunctions(outputFile, baseClassName, derivedClassNames[i], derivedClassMembers[i]);
         }
     }
     else
@@ -179,12 +194,25 @@ int main(int argc, char *argv[])
 
     std::string outputDir = argv[1];
     std::cout << "dir: " + outputDir;
-    std::array<std::string, 4> types = {"Binary : Expr<T> left, Token oper, Expr<T> right",
-                                        "Grouping : Expr<T> expression",
-                                        "Literal : T value",
-                                        "Unary : Token oper, Expr<T> right"};
-    defineAstHeader(outputDir, "Expr", types);
-    defineAstCpp(outputDir, "Expr", types);
+    std::array<std::string, number_Of_Class_Types> types = {"Binary : Expr left, Token oper, Expr right",
+                                                         "Grouping : Expr expression",
+                                                         "Literal : InterpreterObject value",
+                                                         "Unary : Token oper, Expr right"};
+
+    std::array<std::string, number_Of_Class_Types> derivedClassNames;
+    std::vector<std::vector<VariablePair>> derivedClassMembers;
+    derivedClassMembers.reserve(number_Of_Class_Types);
+
+    for (int i = 0; i < number_Of_Class_Types; i++)
+    {
+        derivedClassMembers.emplace_back();
+        derivedClassMembers[i].reserve(max_Class_Member_Amount);
+    }
+
+    addDerivedDataIntoVector(types, derivedClassNames, derivedClassMembers);
+
+    defineAstHeader(outputDir, "Expr", derivedClassNames, derivedClassMembers);
+    defineAstCpp(outputDir, "Expr", derivedClassNames, derivedClassMembers);
 
     return 0;
 }

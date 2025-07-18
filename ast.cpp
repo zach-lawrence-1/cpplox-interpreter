@@ -1,12 +1,11 @@
 #include "ast.h"
 
-Binary::Binary(Expr& left, Token oper, Expr& right)
+Binary::Binary(Expr& left, Token& oper, Expr& right)
 {
     m_left = &left;
-    m_oper = oper;
+    m_oper = &oper;
     m_right = &right;
 }
-
 
 InterpreterObject Binary::accept(Visitor& visitor)
 {
@@ -33,9 +32,9 @@ InterpreterObject Literal::accept(Visitor& visitor)
     return visitor.visitLiteralExpr(*this);
 }
 
-Unary::Unary(const Token& oper, Expr& right)
+Unary::Unary(Token& oper, Expr& right)
 {
-    m_oper = oper;
+    m_oper = &oper;
     m_right = &right;
 }
 
@@ -43,3 +42,4 @@ InterpreterObject Unary::accept(Visitor& visitor)
 {
     return visitor.visitUnaryExpr(*this);
 }
+

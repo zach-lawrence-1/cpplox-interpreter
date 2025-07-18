@@ -33,13 +33,15 @@ int main()
     std::string test = "123";
     InterpreterObject firstObject(test);
     InterpreterObject secondObject(1);
+    Token minus(TOKEN_MINUS, "-", 1);
+    Token multiply(TOKEN_STAR, "*", 1);
 
     Literal L(firstObject);
     Literal R(secondObject);
-    Unary u(Token(TOKEN_MINUS, "-", 1), L);
+    Unary u(minus, L);
     Grouping g(R);
-    Binary expression(u, Token(TOKEN_STAR, "*", 1), g);
-    Binary expression2(expression, Token(TOKEN_STAR, "*", 1), g);
+    Binary expression(u, multiply, g);
+    Binary expression2(expression, multiply, g);
 
     std::cout << AstPrinter().printExpression(expression2) << std::endl;
 }

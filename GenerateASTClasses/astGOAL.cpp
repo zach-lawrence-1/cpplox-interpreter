@@ -1,52 +1,44 @@
-#include "astGOAL.h"
+#include "ast.h"
 
-template<typename T>
-Binary<T>::Binary(Expr<T> left, Token oper, Expr<T> right)
+Binary::Binary(Expr& left, Token& oper, Expr& right)
 {
-    m_left = left;
-    m_oper = oper;
-    m_right = right;
+    m_left = &left;
+    m_oper = &oper;
+    m_right = &right;
 }
 
-template<typename T>
-T Binary<T>::accept(Visitor<T>& visitor)
+InterpreterObject Binary::accept(Visitor& visitor)
 {
-    return visitor.visitBinaryExpr(this);
+    return visitor.visitBinaryExpr(*this);
 }
 
-template<typename T>
-Grouping<T>::Grouping(Expr<T> expression)
+Grouping::Grouping(Expr& expression)
 {
-    m_expression = expression;
+    m_expression = &expression;
 }
 
-template<typename T>
-T Grouping<T>::accept(Visitor<T>& visitor)
+InterpreterObject Grouping::accept(Visitor& visitor)
 {
-    return visitor.visitGroupingExpr(this);
+    return visitor.visitGroupingExpr(*this);
 }
 
-template<typename T>
-Literal<T>::Literal(T value)
+Literal::Literal(InterpreterObject& value)
 {
     m_value = value;
 }
 
-template<typename T>
-T Literal<T>::accept(Visitor<T>& visitor)
+InterpreterObject Literal::accept(Visitor& visitor)
 {
-    return visitor.visitLiteralExpr(this);
+    return visitor.visitLiteralExpr(*this);
 }
 
-template<typename T>
-Unary<T>::Unary(Token oper, Expr<T> right)
+Unary::Unary(Token& oper, Expr& right)
 {
-    m_oper = oper;
-    m_right = right;
+    m_oper = &oper;
+    m_right = &right;
 }
 
-template<typename T>
-T Unary<T>::accept(Visitor<T>& visitor)
+InterpreterObject Unary::accept(Visitor& visitor)
 {
-    return visitor.visitUnaryExpr(this);
+    return visitor.visitUnaryExpr(*this);
 }

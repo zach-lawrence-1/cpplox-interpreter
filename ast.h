@@ -5,11 +5,8 @@
 #include "interpreterObject.h"
 
 class Binary;
-
 class Grouping;
-
 class Literal;
-
 class Unary;
 
 class Visitor
@@ -31,11 +28,11 @@ class Binary : public Expr
 {
     public:
         Expr* m_left;
-        Token m_oper;
+        Token* m_oper;
         Expr* m_right;
 
     public:
-        Binary(Expr& left, Token oper, Expr& right);
+        Binary(Expr& left, Token& oper, Expr& right);
         InterpreterObject accept(Visitor& visitor) override;
 };
 
@@ -62,11 +59,11 @@ class Literal : public Expr
 class Unary : public Expr
 {
     public:
-        Token m_oper;
+        Token* m_oper;
         Expr* m_right;
 
     public:
-        Unary(const Token& oper, Expr& right);
+        Unary(Token& oper, Expr& right);
         InterpreterObject accept(Visitor& visitor) override;
 };
 

@@ -2,81 +2,69 @@
 #define AST
 
 #include "scanner.h"
+#include "interpreterObject.h"
 
-template<typename T>
 class Binary;
-
-template<typename T>
 class Grouping;
-
-template<typename T>
 class Literal;
-
-template<typename T>
 class Unary;
 
-template<typename T>
 class Visitor
 {
     public:
-        virtual T visitBinaryExpr(Binary<T>& expr) = 0;
-        virtual T visitGroupingExpr(Grouping<T>& expr) = 0;
-        virtual T visitLiteralExpr(Literal<T>& expr) = 0;
-        virtual T visitUnaryExpr(Unary<T>& expr) = 0;
+        virtual InterpreterObject visitBinaryExpr(Binary& expr) = 0;
+        virtual InterpreterObject visitGroupingExpr(Grouping& expr) = 0;
+        virtual InterpreterObject visitLiteralExpr(Literal& expr) = 0;
+        virtual InterpreterObject visitUnaryExpr(Unary& expr) = 0;
 };
 
-template<typename T>
 class Expr
 {
     public:
-        virtual T accept(Visitor<T>& visitor) = 0;
+        virtual InterpreterObject accept(Visitor& visitor) = 0;
 };
 
-template<typename T>
-class Binary : public Expr<T>
+class Binary : public Expr
 {
-    private:
-        const Expr<T> m_left;
-        const Token m_oper;
-        const Expr<T> m_right;
+    public:
+        Expr* m_left;
+        Token* m_oper;
+        Expr* m_right;
 
     public:
-        Binary(Expr<T> left, Token oper, Expr<T> right);
-        T accept(Visitor<T>& visitor) override;
+        Binary(Expr& left, Token& oper, Expr& right);
+        InterpreterObject accept(Visitor& visitor) override;
 };
 
-template<typename T>
-class Grouping : public Expr<T>
+class Grouping : public Expr
 {
-    private:
-        const Expr<T> m_expression;
+    public:
+        Expr* m_expression;
 
     public:
-        Grouping(Expr<T> expression);
-        T accept(Visitor<T>& visitor) override;
+        Grouping(Expr& expression);
+        InterpreterObject accept(Visitor& visitor) override;
 };
 
-template<typename T>
-class Literal : public Expr<T>
+class Literal : public Expr
 {
-    private:
-        const T m_value;
+    public:
+        InterpreterObject m_value;
 
     public:
-        Literal(T value);
-        T accept(Visitor<T>& visitor) override;
+        Literal(InterpreterObject& value);
+        InterpreterObject accept(Visitor& visitor) override;
 };
 
-template<typename T>
-class Unary : public Expr<T>
+class Unary : public Expr
 {
-    private:
-        const Token m_oper;
-        const Expr<T> m_right;
+    public:
+        Token* m_oper;
+        Expr* m_right;
 
     public:
-        Unary(Token oper, Expr<T> right);
-        T accept(Visitor<T>& visitor) override;
+        Unary(Token& oper, Expr& right);
+        InterpreterObject accept(Visitor& visitor) override;
 };
 
 #endif
