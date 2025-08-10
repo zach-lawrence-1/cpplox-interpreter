@@ -70,6 +70,7 @@ class Token
         Token(TokenType type, std::string lexeme, int line);
         std::string getLexeme();
         TokenType getType();
+        int getLine();
 };
 
 class Scanner

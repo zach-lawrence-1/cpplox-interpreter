@@ -1,5 +1,7 @@
 #include "execution.h"
 #include "scanner.h"
+#include "astPrinter.h"
+#include "parser.h"
 
 bool errorExists = false;
 
@@ -19,15 +21,34 @@ void error(const int& line, const std::string& message)
     report(line, "", message);
 }
 
+void error(Token token, const std::string& message)
+{
+    if (token.getType() == TOKEN_EOF)
+        report(token.getLine(), " at end", message);
+    else
+        report(token.getLine(), " at '" + token.getLexeme() + "'", message);
+}
+
 void run(const std::string& allFileData)
 {
     Scanner scanner(allFileData);
     std::vector<Token> tokens = scanner.scanTokens();
 
-    for (int i = 0; i < int(tokens.size()); i++)
+    Parser parser(tokens);
+    std::unique_ptr<Expr> expression = parser.parse();
+    AstPrinter printer;
+
+    std::cout << printer.printExpression(*expression);
+
+    if (errorExists)
     {
-        std::cout << "Lexeme: " << tokens[i].getLexeme() << " type of token: " << tokens[i].getType() << std::endl;
+        return;
     }
+
+    //for (Token token : tokens)
+    //{
+    //    std::cout << "Lexeme: " << token.getLexeme() << " type of token: " << token.getType() << std::endl;
+    //}
 }
 
 void promptCode()

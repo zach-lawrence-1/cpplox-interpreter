@@ -4,6 +4,8 @@
 #include "scanner.h"
 #include "interpreterObject.h"
 
+//TODO: rewrite implementation either using std::any, std::variant, or smart pointers
+
 class Binary;
 class Grouping;
 class Literal;

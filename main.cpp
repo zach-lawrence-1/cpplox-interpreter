@@ -5,7 +5,6 @@
 #include "ast.h"
 #include "astPrinter.h"
 
-/*
 int main(int argc, char* argv[])
 {
     if (argc == 1)
@@ -24,10 +23,10 @@ int main(int argc, char* argv[])
         exit(-1);
     }
 }
-    */
 
 
 //NOTE: temporary main function for testing ast implementation
+/*
 int main()
 {
     std::string test = "123";
@@ -45,3 +44,4 @@ int main()
 
     std::cout << AstPrinter().printExpression(expression2) << std::endl;
 }
+*/
