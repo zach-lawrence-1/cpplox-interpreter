@@ -34,16 +34,29 @@ void run(const std::string& allFileData)
     Scanner scanner(allFileData);
     std::vector<Token> tokens = scanner.scanTokens();
 
+    std::cout << "tokens: " << tokens.size();
+
+    //print out tokens here for testing
     Parser parser(tokens);
     std::unique_ptr<Expr> expression = parser.parse();
+    
     AstPrinter printer;
 
-    std::cout << printer.printExpression(*expression);
+    if (expression == nullptr)
+    {
+        std::cout << "expression could not be constructed";
+        return;
+    }
+    else
+    {
+        std::cout << printer.printExpression(expression);
+    }
 
     if (errorExists)
     {
         return;
     }
+    
 
     //for (Token token : tokens)
     //{

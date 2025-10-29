@@ -21,7 +21,7 @@ std::unique_ptr<Expr> Parser::equality()
     {
         Token oper = previous();
         std::unique_ptr<Expr> right = comparison();
-        expr = std::make_unique<Binary>(Binary(*expr, oper, *right));
+        expr = std::make_unique<Binary>(std::move(expr), oper, std::move(right));
     }
 
     return expr;
@@ -30,7 +30,7 @@ std::unique_ptr<Expr> Parser::equality()
 bool Parser::match(const std::vector<TokenType>& types)
 {
     for (TokenType type : types)
-    {    
+    {
         if (check(type))
         {
             advance();
@@ -81,7 +81,7 @@ std::unique_ptr<Expr> Parser::comparison()
     {
         Token oper = previous();
         std::unique_ptr<Expr> right = term();
-        expr = std::make_unique<Binary>(Binary(*expr, oper, *right));
+        expr = std::make_unique<Binary>(std::move(expr), oper, std::move(right));
     }
 
     return expr;
@@ -96,7 +96,7 @@ std::unique_ptr<Expr> Parser::term()
     {
         Token oper = previous();
         std::unique_ptr<Expr> right = factor();
-        expr = std::make_unique<Binary>(Binary(*expr, oper, *right));
+        expr = std::make_unique<Binary>(std::move(expr), oper, std::move(right));
     }
 
     return expr;
@@ -111,7 +111,7 @@ std::unique_ptr<Expr> Parser::factor()
     {
         Token oper = previous();
         std::unique_ptr<Expr> right = factor();
-        expr = std::make_unique<Binary>(Binary(*expr, oper, *right));
+        expr = std::make_unique<Binary>(std::move(expr), oper, std::move(right));
     }
 
     return expr;
@@ -125,7 +125,7 @@ std::unique_ptr<Expr> Parser::unary()
     {
         Token oper = previous();
         std::unique_ptr<Expr> right = unary();
-        return std::make_unique<Unary>(Unary(oper, *right));
+        return std::make_unique<Unary>(Unary(oper, std::move(right)));
     }
 
     return primary();
@@ -136,31 +136,38 @@ std::unique_ptr<Expr> Parser::primary()
     if (match({TOKEN_FALSE}))
     {
         InterpreterObject iO(false);
-        return std::make_unique<Literal>(Literal(iO));
+        return std::make_unique<Literal>(iO);
     }
     else if (match({TOKEN_TRUE}))
     {
         InterpreterObject iO(true);
-        return std::make_unique<Literal>(Literal(iO));
+        return std::make_unique<Literal>(iO);
     }
     else if (match({TOKEN_NIL}))
     {
         InterpreterObject iO;
-        return std::make_unique<Literal>(Literal(iO));
+        return std::make_unique<Literal>(iO);
     }
 
-    std::vector<TokenType> tokensToMatch = {TOKEN_NUMBER, TOKEN_STRING};
-    if (match(tokensToMatch))
+    else if (match({TOKEN_NUMBER}))
+    {
+        InterpreterObject iO(std::stoi(previous().getLexeme()));
+        std::cout << "number: " << iO.getNumberValue() << std::endl;
+        return std::make_unique<Literal>(iO);
+    }
+
+    else if (match({TOKEN_STRING}))
     {
         InterpreterObject iO(previous().getLexeme());
-        return std::make_unique<Literal>(Literal(iO));
+        std::cout << "string: " << iO.getStringValue() << std::endl;
+        return std::make_unique<Literal>(iO);
     }
 
     if (match({TOKEN_LEFT_PAREN}))
     {
         std::unique_ptr<Expr> expr = expression();
         consume(TOKEN_RIGHT_PAREN, "EXPECT: ')' after expression");
-        return std::make_unique<Grouping>(Grouping(*expr));
+        return std::make_unique<Grouping>(std::move(expr));
     }
 
     error(peek(), "expected expression");

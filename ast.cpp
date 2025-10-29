@@ -1,10 +1,10 @@
 #include "ast.h"
 
-Binary::Binary(Expr& left, Token& oper, Expr& right)
+Binary::Binary(std::unique_ptr<Expr> left, Token& oper, std::unique_ptr<Expr> right)
 {
-    m_left = &left;
-    m_oper = &oper;
-    m_right = &right;
+    m_left = std::move(left);
+    m_oper = oper;
+    m_right = std::move(right);
 }
 
 InterpreterObject Binary::accept(Visitor& visitor)
@@ -12,9 +12,9 @@ InterpreterObject Binary::accept(Visitor& visitor)
     return visitor.visitBinaryExpr(*this);
 }
 
-Grouping::Grouping(Expr& expression)
+Grouping::Grouping(std::unique_ptr<Expr> expression)
 {
-    m_expression = &expression;
+    m_expression = std::move(expression);
 }
 
 InterpreterObject Grouping::accept(Visitor& visitor)
@@ -32,10 +32,10 @@ InterpreterObject Literal::accept(Visitor& visitor)
     return visitor.visitLiteralExpr(*this);
 }
 
-Unary::Unary(Token& oper, Expr& right)
+Unary::Unary(Token& oper, std::unique_ptr<Expr> right)
 {
-    m_oper = &oper;
-    m_right = &right;
+    m_oper = oper;
+    m_right = std::move(right);
 }
 
 InterpreterObject Unary::accept(Visitor& visitor)

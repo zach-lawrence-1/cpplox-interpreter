@@ -23,7 +23,7 @@ std::string getObjectValueAsString(InterpreterObject obj)
 
 InterpreterObject AstPrinter::visitBinaryExpr(Binary& expr)
 {
-    return InterpreterObject(parenthesize(expr.m_oper->getLexeme(), *(expr.m_left), *(expr.m_right)));
+    return InterpreterObject(parenthesize(expr.m_oper.getLexeme(), *(expr.m_left), *(expr.m_right)));
 }
 
 InterpreterObject AstPrinter::visitGroupingExpr(Grouping& expr)
@@ -38,12 +38,12 @@ InterpreterObject AstPrinter::visitLiteralExpr(Literal& expr)
 
 InterpreterObject AstPrinter::visitUnaryExpr(Unary& expr)
 {
-    return InterpreterObject(parenthesize(expr.m_oper->getLexeme(), *(expr.m_right)));
+    return InterpreterObject(parenthesize(expr.m_oper.getLexeme(), *(expr.m_right)));
 }
 
-std::string AstPrinter::printExpression(Expr& expr)
+std::string AstPrinter::printExpression(std::unique_ptr<Expr>& expr)
 {
-    return expr.accept(*this).getStringValue();
+    return expr->accept(*this).getStringValue();
 }
 
 std::string AstPrinter::parenthesize(std::string name, Expr& leftExpr, Expr& rightExpr)

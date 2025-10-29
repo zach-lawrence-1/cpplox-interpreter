@@ -6,7 +6,7 @@
 #include "scanner.h"
 #include "ast.h"
 
-//TODO: rewrite implementation using smart pointers
+//TODO: rewrite implementation using smart pointers (probably shared pointers, but maybe unique works)
 
 class Parser {
     private:
