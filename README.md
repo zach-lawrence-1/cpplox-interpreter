@@ -22,4 +22,9 @@ On windows, as long as you have MSYS2 setup with g++ and you can run make files 
 5. run ```./interpreter.exe``` or ```./interpreter```
 6. You can also pass in files with ```./interpreter.exe filename.cpplox``` or ```./interpreter filename.cpplox```
 
+### Linux
 Will work on linux without any modification to makefile
+1. Download code and make file.
+2. Type in ```make``` or ```make interpreter```
+3. run ```./interpreter```
+4. You can also pass in files with ```./interpreter filename.cpplox```
