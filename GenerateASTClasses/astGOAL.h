@@ -1,6 +1,8 @@
 #ifndef AST
 #define AST
 
+#include <memory>
+
 #include "scanner.h"
 #include "interpreterObject.h"
 
@@ -22,27 +24,28 @@ class Expr
 {
     public:
         virtual InterpreterObject accept(Visitor& visitor) = 0;
+        virtual ~Expr() = default;
 };
 
 class Binary : public Expr
 {
     public:
-        Expr* m_left;
-        Token* m_oper;
-        Expr* m_right;
+        std::unique_ptr<Expr> m_left;
+        Token m_oper;
+        std::unique_ptr<Expr> m_right;
 
     public:
-        Binary(Expr& left, Token& oper, Expr& right);
+        Binary(std::unique_ptr<Expr> left, Token& oper, std::unique_ptr<Expr> right);
         InterpreterObject accept(Visitor& visitor) override;
 };
 
 class Grouping : public Expr
 {
     public:
-        Expr* m_expression;
+        std::unique_ptr<Expr> m_expression;
 
     public:
-        Grouping(Expr& expression);
+        Grouping(std::unique_ptr<Expr> expression);
         InterpreterObject accept(Visitor& visitor) override;
 };
 
@@ -59,11 +62,11 @@ class Literal : public Expr
 class Unary : public Expr
 {
     public:
-        Token* m_oper;
-        Expr* m_right;
+        Token m_oper;
+        std::unique_ptr<Expr> m_right;
 
     public:
-        Unary(Token& oper, Expr& right);
+        Unary(Token& oper, std::unique_ptr<Expr> right);
         InterpreterObject accept(Visitor& visitor) override;
 };
 

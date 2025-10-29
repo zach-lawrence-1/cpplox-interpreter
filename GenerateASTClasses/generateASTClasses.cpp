@@ -4,6 +4,8 @@
 #include <fstream>
 #include <vector>
 
+//TODO: will need to rewrite, since structure of ast class has changed since before
+
 using VariablePair = std::pair<std::string, std::string>;
 
 static const int number_Of_Class_Types = 4;
