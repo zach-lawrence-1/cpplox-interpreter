@@ -6,9 +6,6 @@
 #include "scanner.h"
 #include "interpreterObject.h"
 
-//TODO: rewrite implementation using smart pointers
-//NOTE: may need to derive Expr from std::enable_shared_from_this
-
 class Binary;
 class Grouping;
 class Literal;

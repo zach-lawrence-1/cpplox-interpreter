@@ -6,8 +6,6 @@
 #include "scanner.h"
 #include "ast.h"
 
-//TODO: rewrite implementation using smart pointers (probably shared pointers, but maybe unique works)
-
 class Parser {
     private:
         std::vector<Token> m_tokens;

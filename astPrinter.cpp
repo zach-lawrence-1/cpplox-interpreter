@@ -43,7 +43,7 @@ InterpreterObject AstPrinter::visitUnaryExpr(Unary& expr)
 
 std::string AstPrinter::printExpression(std::unique_ptr<Expr>& expr)
 {
-    return expr->accept(*this).getStringValue();
+    return getObjectValueAsString(expr->accept(*this));
 }
 
 std::string AstPrinter::parenthesize(std::string name, Expr& leftExpr, Expr& rightExpr)

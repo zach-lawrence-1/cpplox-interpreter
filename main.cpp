@@ -1,5 +1,3 @@
-#include <memory>
-
 #include "scanner.h"
 #include "execution.h"
 #include "ast.h"

@@ -151,15 +151,13 @@ std::unique_ptr<Expr> Parser::primary()
 
     else if (match({TOKEN_NUMBER}))
     {
-        InterpreterObject iO(std::stoi(previous().getLexeme()));
-        std::cout << "number: " << iO.getNumberValue() << std::endl;
+        InterpreterObject iO(std::stod(previous().getLexeme()));
         return std::make_unique<Literal>(iO);
     }
 
     else if (match({TOKEN_STRING}))
     {
         InterpreterObject iO(previous().getLexeme());
-        std::cout << "string: " << iO.getStringValue() << std::endl;
         return std::make_unique<Literal>(iO);
     }
 

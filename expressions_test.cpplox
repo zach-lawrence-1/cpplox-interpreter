@@ -1,6 +1,8 @@
-1.91232;
-(3 == 3);
-9 + 2 * 7 / 1 - 91;
-9 != (2 + 7);
-(9 == 9) + (9 * (1 / 2.344));
-"test" + "tree" + "beep";
+These expressions are passed into the parser and printed using astprinter
+9 + 2 * 7 / (1 - 91); should return (+ 9.000000 (* 2.000000 (/ 7.000000 (group (- 1.000000 91.000000)))))
+(3 == 3); should return (group (== 3 3))
+9 != (2 + 7); should return (!= 9.000000 (group (+ 2.000000 7.000000)))
+(9 == 9) + (9 * (1 / 2.344)); should return (+ (group (== 9.000000 9.000000)) (group (* 9.000000 (group (/ 1.000000 2.000000)))))
+"test" + "tree" + "beep"; should return (+ (+ "test" "tree") "beep")
+1.91232; should return 1.91232
+(9 == 90) + 75 / (true + false); should return (+ (group (== 9.000000 90.000000)) (/ 75.000000 (group (+ true false))))
