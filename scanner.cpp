@@ -148,14 +148,11 @@ void Scanner::processNumber()
 void Scanner::scanToken()
 {
     char tempCharacter = advance();
-
-    //TODO: try to refactor by assigning temporaryToken to the token value and running addToken at the end of the function
-    //TokenType temporaryToken;
+    int multiCommentCount = 0;
 
     switch (tempCharacter)
     {
         case '(':
-            //temporaryToken = TOKEN_LEFT_PAREN;
             addToken(TOKEN_LEFT_PAREN, "");
             break;
         case ')':
@@ -198,6 +195,7 @@ void Scanner::scanToken()
             addToken(match('=') ? TOKEN_GREATER_EQUAL : TOKEN_GREATER, "");
             break;
         case '/':
+            //single line comment
             if (match('/'))
             {
                 while (peekChar() != '\n' && m_current < int(m_source.length()))
@@ -207,16 +205,32 @@ void Scanner::scanToken()
             }
             else if (match('*'))
             {
-                while ((peekChar() != '*' || peekNextChar() != '/') && m_current < int(m_source.length()))
-                {
-                    advance();
-                }
+                multiCommentCount++;
 
-                //collect multiline comment ending
-                if (m_current < int(m_source.length()))
+                while (multiCommentCount > 0 && m_current < int(m_source.length()))
                 {
-                    advance();
-                    advance();
+                    while ((peekChar() != '*' || peekNextChar() != '/') && m_current < int(m_source.length()))
+                    {
+                        //finds another multiline comment that is nested
+                        if (peekChar() == '/' && peekNextChar() == '*')
+                        {
+                            multiCommentCount++;
+                        }
+                        advance();
+                    }
+
+                    //collect multiline comment ending
+                    if (peekChar() == '*' && peekNextChar() == '/' && m_current < int(m_source.length()))
+                    {
+                        multiCommentCount--;
+                        advance();
+                        advance();
+                    }
+                }
+                
+                if (multiCommentCount != 0)
+                {
+                    error(m_line, "Missing multiline comment closure");
                 }
             }
             else
