@@ -215,6 +215,7 @@ void Scanner::scanToken()
                         if (peekChar() == '/' && peekNextChar() == '*')
                         {
                             multiCommentCount++;
+                            advance();
                         }
                         advance();
                     }
