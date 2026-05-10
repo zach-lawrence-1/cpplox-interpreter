@@ -28,3 +28,7 @@ Will work on linux without any modification to makefile
 2. Type in ```make``` or ```make interpreter```
 3. run ```./interpreter```
 4. You can also pass in files with ```./interpreter filename.cpplox```
+
+## Running Tests
+1. Do the same steps as running on desired platform, but use ```make tests```
+2. Use ```./runTests``` to run all unit tests

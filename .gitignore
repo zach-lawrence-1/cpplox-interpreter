@@ -4,3 +4,5 @@ interpreter.exe
 GenerateASTClasses/generateAST
 GenerateASTClasses/generateAST.exe
 template errors.PNG
+runTests
+runTests.exe
