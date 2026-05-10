@@ -6,13 +6,12 @@ Making an interpreter for the lox language in C++ utilizing the crafting interpr
 ### Downloading The Code
 Download the code and make file as follows
 Git:
-1. ```git clone https://github.com/zach-lawrence-1/cpplox-interpreter.git c```
+1. ```git clone --recurse-submodules https://github.com/zach-lawrence-1/cpplox-interpreter.git c```
    - c can be any local directory you want.
 2. ```cd c```
 
-OR
 
-Just download zip from github and unzip where you want
+
 ### Windows
 On windows, as long as you have MSYS2 setup with g++ and you can run make files then you should be able to run the main program as follows:
 1. Download code and make file.
@@ -30,5 +29,5 @@ Will work on linux without any modification to makefile
 4. You can also pass in files with ```./interpreter filename.cpplox```
 
 ## Running Tests
-1. Do the same steps as running on desired platform, but use ```make tests```
+1. Do the same steps as running on desired platform, but use ```make tests``` instead
 2. Use ```./runTests``` to run all unit tests
