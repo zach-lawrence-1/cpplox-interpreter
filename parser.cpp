@@ -9,7 +9,21 @@ Parser::Parser(std::vector<Token>& tokens)
 
 std::unique_ptr<Expr> Parser::expression()
 {
-    return equality();
+    return comma();
+}
+
+std::unique_ptr<Expr> Parser::comma()
+{
+    std::unique_ptr<Expr> expr = equality();
+
+    while (match({TOKEN_COMMA}))
+    {
+        Token oper = previous();
+        std::unique_ptr<Expr> rightExpr = equality();
+        expr = std::make_unique<Binary>(std::move(expr), oper, std::move(rightExpr));
+    }
+
+    return expr;
 }
 
 std::unique_ptr<Expr> Parser::equality()
@@ -17,7 +31,7 @@ std::unique_ptr<Expr> Parser::equality()
     std::unique_ptr<Expr> expr = comparison();
     std::vector<TokenType> tokensToMatch = {TOKEN_NOT_EQUAL, TOKEN_EQUAL_EQUAL};
     
-    while (match({TOKEN_NOT_EQUAL, TOKEN_EQUAL_EQUAL}))
+    while (match(tokensToMatch))
     {
         Token oper = previous();
         std::unique_ptr<Expr> right = comparison();

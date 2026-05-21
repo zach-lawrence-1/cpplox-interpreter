@@ -37,6 +37,8 @@ void run(const std::string& allFileData)
     std::cout << "tokens: " << tokens.size() << std::endl;
 
     Parser parser(tokens);
+
+    //NOTE: for now, this only parses one expression/statement at a time. Given a file, it will only parse the first line of actual code
     std::unique_ptr<Expr> expression = parser.parse();
 
     if (errorExists)
@@ -49,8 +51,8 @@ void run(const std::string& allFileData)
         std::cout << "expression could not be constructed";
         return;
     }
-    
-    std::cout << printer.printExpression(expression);
+
+    std::cout << printer.printExpression(expression) << std::endl;
 
     //for (Token token : tokens)
     //{

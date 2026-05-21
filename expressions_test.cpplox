@@ -11,8 +11,10 @@
 /*
 1.91232; should return 1.91232
 
-(9 == 90) + 75 / (true + false); should return (+ (group (== 9.000000 90.000000)) (/ 75.000000 (group (+ true false))))
+(9 == 90) + 75 / (true + false); //should return (+ (group (== 9.000000 90.000000)) (/ 75.000000 (group (+ true false))))
 */
 */
 
 /* * */ */
+
+("left" == "right"), 10, true, (1); //should return (, (, (, (group (== "left" "right")) 10.000000) true) (group 1.000000))
