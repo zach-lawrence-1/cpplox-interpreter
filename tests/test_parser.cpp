@@ -3,7 +3,8 @@
 #include "./../scanner.h"
 #include "./../execution.h"
 
-TEST(ParserTest, ParseSimpleFile) {
+TEST(ParserTest, ParseSimpleFile)
+{
     std::string allFileData = "";
     std::ifstream fileReader("./../hello.cpplox");
     

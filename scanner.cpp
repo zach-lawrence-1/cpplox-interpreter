@@ -23,7 +23,6 @@ int Token::getLine()
     return m_line;
 }
 
-
 Scanner::Scanner(const std::string& source)
 {
     m_source = source;

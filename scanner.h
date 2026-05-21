@@ -103,6 +103,10 @@ class Scanner
 
     public:
         Scanner(const std::string& source);
+        int getStart() {return m_start;};
+        int getCurrent() {return m_current;};
+        int getLine() {return m_line;};
+        std::string getSource() {return m_source;};
         std::vector<Token> scanTokens();
         void scanToken();
         char advance();
