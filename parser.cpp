@@ -14,13 +14,32 @@ std::unique_ptr<Expr> Parser::expression()
 
 std::unique_ptr<Expr> Parser::comma()
 {
-    std::unique_ptr<Expr> expr = equality();
+    //NOTE: will need to make sure function definitions handle the chained commas not as an expression but as parameters
+    std::unique_ptr<Expr> expr = ternary();
 
     while (match({TOKEN_COMMA}))
     {
         Token oper = previous();
-        std::unique_ptr<Expr> rightExpr = equality();
+        std::unique_ptr<Expr> rightExpr = ternary();
         expr = std::make_unique<Binary>(std::move(expr), oper, std::move(rightExpr));
+    }
+
+    return expr;
+}
+
+std::unique_ptr<Expr> Parser::ternary()
+{
+    //must parse from right to left since the value being returned by the ternary operator is
+    //dependent on the right side of the ? operator. To do so, we can use recursion.
+    std::unique_ptr<Expr> expr = equality();
+
+    if (match({TOKEN_QUESTION}))
+    {
+        Token question = previous();
+        std::unique_ptr<Expr> thenExpr = ternary();
+        consume(TOKEN_COLON, "Expected ':' after ternary operator '?'");
+        std::unique_ptr<Expr> elseExpr = ternary();
+        expr = std::make_unique<Ternary>(std::move(expr), std::move(thenExpr), std::move(elseExpr));
     }
 
     return expr;

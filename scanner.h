@@ -20,6 +20,7 @@ enum TokenType
     TOKEN_SEMICOLON,
     TOKEN_SLASH,
     TOKEN_STAR,
+    TOKEN_QUESTION,
 
     //one or two character tokens.
     TOKEN_NOT,
@@ -30,6 +31,7 @@ enum TokenType
     TOKEN_GREATER_EQUAL,
     TOKEN_LESS,
     TOKEN_LESS_EQUAL,
+    TOKEN_COLON,
 
     //literals.
     TOKEN_IDENTIFIER,

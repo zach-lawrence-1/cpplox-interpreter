@@ -1,17 +1,19 @@
 Context free grammar representation:
 
-expression -> literal | unary | binary | grouping | comma;
+expression -> literal | unary | binary | grouping | comma | ternary;
 literal -> NUMBER | STRING | "true" | "false" | "null";
 unary -> ( "-" | "!" ) expression;
 binary -> expression operator expression;
 grouping -> "(" expression ")";
-comma -> expression "," expression
+comma -> expression "," expression;
+ternary -> expression "?" expression ":" ternary;
 operator -> "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/";
 
 Grammar representation with basic precedence implemented:
 
 expression -> comma
-comma -> equality ("," equality)*
+comma -> ternary ("," ternary)*
+ternary -> equality ("?" ternary : ternary)?;
 equality -> comparison ( ( "!=" | "==" ) comparison )*;
 comparison -> term ( ( ">" | ">=" | "<" | "<=" ) term )*;
 term -> factor ( ( "-" | "+" ) factor )*;

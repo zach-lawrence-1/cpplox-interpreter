@@ -16,6 +16,7 @@ class Parser {
         int getC() {return m_current;};
         std::unique_ptr<Expr> expression();
         std::unique_ptr<Expr> comma();
+        std::unique_ptr<Expr> ternary();
         std::unique_ptr<Expr> equality();
         bool match(const std::vector<TokenType>& types);
         bool check(TokenType type);

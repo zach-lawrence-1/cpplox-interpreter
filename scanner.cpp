@@ -184,6 +184,12 @@ void Scanner::scanToken()
         case '!':
             addToken(match('=') ? TOKEN_NOT_EQUAL : TOKEN_NOT, "");
             break;
+        case '?':
+            addToken(TOKEN_QUESTION, "");
+            break;
+        case ':':
+            addToken(TOKEN_COLON, "");
+            break;
         case '=':
             addToken(match('=') ? TOKEN_EQUAL_EQUAL : TOKEN_EQUAL, "");
             break;
