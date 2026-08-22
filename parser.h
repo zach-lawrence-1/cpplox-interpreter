@@ -18,20 +18,20 @@ class Parser {
         std::unique_ptr<Expr> comma();
         std::unique_ptr<Expr> ternary();
         std::unique_ptr<Expr> equality();
+        std::unique_ptr<Expr> comparison();
+        std::unique_ptr<Expr> term();
+        std::unique_ptr<Expr> factor();
+        std::unique_ptr<Expr> unary();
+        std::unique_ptr<Expr> primary();
+        std::unique_ptr<Expr> parse();
         bool match(const std::vector<TokenType>& types);
         bool check(TokenType type);
         Token advance();
         bool isAtEnd();
         Token peek();
         Token previous();
-        std::unique_ptr<Expr> comparison();
-        std::unique_ptr<Expr> term();
-        std::unique_ptr<Expr> factor();
-        std::unique_ptr<Expr> unary();
-        std::unique_ptr<Expr> primary();
         Token consume(TokenType type, std::string message);
         void synchronize();
-        std::unique_ptr<Expr> parse();
 };
 
 #endif

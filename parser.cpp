@@ -181,13 +181,11 @@ std::unique_ptr<Expr> Parser::primary()
         InterpreterObject iO;
         return std::make_unique<Literal>(iO);
     }
-
     else if (match({TOKEN_NUMBER}))
     {
         InterpreterObject iO(std::stod(previous().getLexeme()));
         return std::make_unique<Literal>(iO);
     }
-
     else if (match({TOKEN_STRING}))
     {
         InterpreterObject iO(previous().getLexeme());
@@ -199,6 +197,36 @@ std::unique_ptr<Expr> Parser::primary()
         std::unique_ptr<Expr> expr = expression();
         consume(TOKEN_RIGHT_PAREN, "EXPECT: ')' after expression");
         return std::make_unique<Grouping>(std::move(expr));
+    }
+
+    //binary expressions missing left hand operator
+
+    if (match({TOKEN_EQUAL_EQUAL, TOKEN_NOT_EQUAL}))
+    {
+        error(previous(), "Missing left-hand operand.");
+        equality();
+        return nullptr;
+    }
+
+    if (match({TOKEN_GREATER_EQUAL, TOKEN_LESS_EQUAL, TOKEN_GREATER, TOKEN_LESS}))
+    {
+        error(previous(), "Missing left-hand operand.");
+        comparison();
+        return nullptr;
+    }
+
+    if (match({TOKEN_PLUS}))
+    {
+        error(previous(), "Missing left-hand operand.");
+        term();
+        return nullptr;
+    }
+
+    if (match({TOKEN_STAR, TOKEN_SLASH}))
+    {
+        error(previous(), "Missing left-hand operand.");
+        factor();
+        return nullptr;
     }
 
     error(peek(), "expected expression");
