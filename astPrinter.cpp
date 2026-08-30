@@ -1,26 +1,5 @@
 #include "astPrinter.h"
 
-std::string getObjectValueAsString(InterpreterObject obj)
-{
-    switch(obj.getType())
-    {
-        case STRING:
-            return obj.getStringValue();
-        case BOOL:
-        {
-            if (obj.getBoolValue())
-                return "true";
-            return "false";
-        }
-        case NUMBER:
-            return std::to_string(obj.getNumberValue());
-        case NIL:
-            return "nil";
-    }
-
-    return "";
-}
-
 InterpreterObject AstPrinter::visitBinaryExpr(Binary& expr)
 {
     return InterpreterObject(parenthesize(expr.m_oper.getLexeme(), *(expr.m_left), *(expr.m_right)));

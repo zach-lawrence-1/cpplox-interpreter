@@ -57,3 +57,50 @@ std::string InterpreterObject::getStringValue()
 {
     return m_string;
 }
+
+bool InterpreterObject::operator==(const InterpreterObject& right) const
+{
+    if (this->m_type != right.m_type)
+        return false;
+    
+    switch (this->m_type)
+    {
+        case NUMBER:
+            if (this->m_number != right.m_number)
+                return false;
+            break;
+        case STRING:
+            if (this->m_string != right.m_string)
+                return false;
+            break;
+        case BOOL:
+            if (this->m_boolean != right.m_boolean)
+                return false;
+            break;
+        case NIL:
+            break;
+    }
+
+    return true;
+}
+
+std::string getObjectValueAsString(InterpreterObject obj)
+{
+    switch(obj.getType())
+    {
+        case STRING:
+            return obj.getStringValue();
+        case BOOL:
+        {
+            if (obj.getBoolValue())
+                return "true";
+            return "false";
+        }
+        case NUMBER:
+            return std::to_string(obj.getNumberValue());
+        case NIL:
+            return "nil";
+    }
+
+    return "";
+}

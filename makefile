@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -fsanitize=address -fno-omit-frame-pointer -pedantic -Wall -Wextra -g
 INCLUDES = -Iexternal/googletest/googletest/include -Iexternal/googletest/googletest
-FILES = execution.cpp ast.cpp astPrinter.cpp interpreterObject.cpp scanner.cpp parser.cpp
+FILES = execution.cpp ast.cpp astPrinter.cpp interpreterObject.cpp scanner.cpp parser.cpp interpreter.cpp
 TEST_FILES = tests/test_scanner.cpp tests/test_parser.cpp
 GTEST_FILES = external/googletest/googletest/src/gtest-all.cc external/googletest/googletest/src/gtest_main.cc
 

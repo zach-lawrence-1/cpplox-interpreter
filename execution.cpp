@@ -2,8 +2,10 @@
 #include "scanner.h"
 #include "astPrinter.h"
 #include "parser.h"
+#include "interpreter.h"
 
 bool errorExists = false;
+bool runtimeErrorExists = false;
 
 //TODO: add this capability
 /*Error: Unexpected "," in argument list.
@@ -29,6 +31,20 @@ void error(Token token, const std::string& message)
         report(token.getLine(), " at '" + token.getLexeme() + "'", message);
 }
 
+void reportRuntimeError(const int& line, const std::string& where, const std::string& message)
+{
+    std::cerr << "\033[31m[Line " << line << "] Runtime Error" << where << ": " + message << "\033[0m" << std::endl;
+    runtimeErrorExists = true;
+}
+
+void runtimeError(Token token, const std::string& message)
+{
+    if (token.getType() == TOKEN_EOF)
+        reportRuntimeError(token.getLine(), " at end", message);
+    else
+        reportRuntimeError(token.getLine(), " at '" + token.getLexeme() + "'", message);
+}
+
 void run(const std::string& allFileData)
 {
     Scanner scanner(allFileData);
@@ -43,16 +59,20 @@ void run(const std::string& allFileData)
 
     if (errorExists)
         return;
+
+    Interpreter interprete;
+
+    interprete.interpret(expression);
     
-    AstPrinter printer;
-
-    if (expression == nullptr)
-    {
-        std::cout << "expression could not be constructed";
-        return;
-    }
-
-    std::cout << printer.printExpression(expression) << std::endl;
+    //AstPrinter printer;
+//
+    //if (expression == nullptr)
+    //{
+    //    std::cout << "expression could not be constructed";
+    //    return;
+    //}
+//
+    //std::cout << printer.printExpression(expression) << std::endl;
 
     //for (Token token : tokens)
     //{
@@ -73,6 +93,7 @@ void promptCode()
         
         run(lineInput);
         errorExists = false;
+        runtimeErrorExists = false;
     }
 }
 
@@ -94,9 +115,9 @@ void runFile(const std::string& file)
         run(allFileData);
         
         if (errorExists)
-        {
             exit(-1);
-        }
+        if (runtimeErrorExists)
+            exit(-2);
     }
     else
     {

@@ -9,10 +9,13 @@
 #include "scanner.h"
 
 extern bool errorExists;
+extern bool runtimeErrorExists;
 
 extern void report(const int& line, const std::string& where, const std::string& message);
+extern void reportRuntimeError(Token token, const std::string& message);
 extern void error(const int& line, const std::string& message);
 extern void error(Token token, const std::string& message);
+extern void runtimeError(Token token, const std::string& message);
 extern void run(const std::string& allFileData);
 extern void promptCode();
 extern void runFile(const std::string &file);

@@ -11,10 +11,10 @@ enum ObjectType
 class InterpreterObject
 {
     private:
-        double m_number;
-        bool m_boolean;
         std::string m_string;
+        double m_number;
         ObjectType m_type;
+        bool m_boolean;
 
     public:
         InterpreterObject();
@@ -28,6 +28,9 @@ class InterpreterObject
         double getNumberValue();
         bool getBoolValue();
         std::string getStringValue();
+        bool operator==(const InterpreterObject& right) const;
 };
+
+std::string getObjectValueAsString(InterpreterObject obj);
 
 #endif
