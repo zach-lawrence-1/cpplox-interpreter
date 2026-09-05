@@ -126,6 +126,7 @@ InterpreterObject Interpreter::visitTernaryExpr(Ternary& expr)
     return InterpreterObject();
 }
 
+//TODO: write tests testing the evaluation of different expressions and handling edge cases like div by zero
 void Interpreter::interpret(std::unique_ptr<Expr>& expr)
 {
     InterpreterObject result = evaluate(expr);

@@ -3,6 +3,7 @@
 #include "./../scanner.h"
 #include "./../execution.h"
 
+//TODO: get rid of file test
 TEST(ParserTest, ParseSimpleFile)
 {
     std::string allFileData = "";
@@ -24,6 +25,8 @@ TEST(ParserTest, ParseSimpleFile)
         Parser parser(tokens);
         std::unique_ptr<Expr> expression = parser.parse();
         ASSERT_NE(expression, nullptr);
+
+        //TODO: test structure of the AST generated
     }
     
     //TODO: add more tests, maybe check size of tokens vec before passing into parser

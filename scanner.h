@@ -70,9 +70,9 @@ class Token
     public:
         Token() = default;
         Token(TokenType type, std::string lexeme, int line);
-        std::string getLexeme();
-        TokenType getType();
-        int getLine();
+        std::string getLexeme() const;
+        TokenType getType() const;
+        int getLine() const;
 };
 
 class Scanner
@@ -105,10 +105,10 @@ class Scanner
 
     public:
         Scanner(const std::string& source);
-        int getStart() {return m_start;};
-        int getCurrent() {return m_current;};
-        int getLine() {return m_line;};
-        std::string getSource() {return m_source;};
+        int getStart() const {return m_start;};
+        int getCurrent() const {return m_current;};
+        int getLine() const {return m_line;};
+        std::string getSource() const {return m_source;};
         std::vector<Token> scanTokens();
         void scanToken();
         char advance();

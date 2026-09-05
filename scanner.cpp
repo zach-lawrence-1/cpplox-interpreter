@@ -8,17 +8,17 @@ Token::Token(TokenType type, std::string lexeme, int line)
     m_line = line;
 }
 
-std::string Token::getLexeme()
+std::string Token::getLexeme() const
 {
     return m_lexeme;
 }
 
-TokenType Token::getType()
+TokenType Token::getType() const
 {
     return m_type;
 }
 
-int Token::getLine()
+int Token::getLine() const
 {
     return m_line;
 }
@@ -37,9 +37,9 @@ char Scanner::advance()
 void Scanner::addToken(TokenType type, std::string stringValue)
 {
     //TODO: do something with stringValue in later steps/reorganization
-    stringValue = "";
-    std::string temporaryLexeme = m_source.substr(m_start, m_current - m_start);
-    m_tokens.push_back(Token(type, temporaryLexeme, m_line));
+    if (stringValue == "")
+        stringValue = m_source.substr(m_start, m_current - m_start);
+    m_tokens.push_back(Token(type, stringValue, m_line));
 }
 
 bool Scanner::match(const char& expected)
@@ -85,7 +85,7 @@ void Scanner::processString()
     advance();
 
     //trim the quotes surrounding our string value
-    std::string stringValue = m_source.substr(m_start + 1, (m_current - 1 - m_start));
+    std::string stringValue = m_source.substr(m_start + 1, (m_current - 2 - m_start));
     addToken(TOKEN_STRING, stringValue);
 }
 
