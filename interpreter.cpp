@@ -44,7 +44,15 @@ InterpreterObject Interpreter::visitBinaryExpr(Binary& expr)
             break;
         case TOKEN_SLASH:
             if (left.getType() == NUMBER)
+            {
+                if (right.getNumberValue() == 0)
+                {
+                    runtimeError(oper, "Cannot divide by zero.");
+                    break;
+                }
+
                 return InterpreterObject(left.getNumberValue() / right.getNumberValue());
+            }
             
             runtimeError(oper, "Operands must be numbers.");
             break;
@@ -117,6 +125,7 @@ InterpreterObject Interpreter::visitUnaryExpr(Unary& expr)
     return InterpreterObject();
 }
 
+//TODO: evaluate this
 InterpreterObject Interpreter::visitTernaryExpr(Ternary& expr)
 {
     InterpreterObject elseExpr = evaluate(expr.m_elseExpr);

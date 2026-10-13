@@ -43,9 +43,9 @@ InterpreterObject Unary::accept(Visitor& visitor)
     return visitor.visitUnaryExpr(*this);
 }
 
-Ternary::Ternary(std::unique_ptr<Expr> expr, std::unique_ptr<Expr> thenExpr, std::unique_ptr<Expr> elseExpr)
+Ternary::Ternary(std::unique_ptr<Expr> expression, std::unique_ptr<Expr> thenExpr, std::unique_ptr<Expr> elseExpr)
 {
-    m_expression = std::move(expr);
+    m_expression = std::move(expression);
     m_thenExpr = std::move(thenExpr);
     m_elseExpr = std::move(elseExpr);
 }

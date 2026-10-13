@@ -1,4 +1,4 @@
-#include "ast.h"
+#include "astTest.h"
 
 Binary::Binary(std::unique_ptr<Expr> left, Token& oper, std::unique_ptr<Expr> right)
 {
@@ -43,3 +43,14 @@ InterpreterObject Unary::accept(Visitor& visitor)
     return visitor.visitUnaryExpr(*this);
 }
 
+Ternary::Ternary(std::unique_ptr<Expr> expression, std::unique_ptr<Expr> thenExpr, std::unique_ptr<Expr> elseExpr)
+{
+    m_expression = std::move(expression);
+    m_thenExpr = std::move(thenExpr);
+    m_elseExpr = std::move(elseExpr);
+}
+
+InterpreterObject Ternary::accept(Visitor& visitor)
+{
+    return visitor.visitTernaryExpr(*this);
+}

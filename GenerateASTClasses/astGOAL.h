@@ -2,7 +2,6 @@
 #define AST
 
 #include <memory>
-
 #include "scanner.h"
 #include "interpreterObject.h"
 
@@ -10,6 +9,7 @@ class Binary;
 class Grouping;
 class Literal;
 class Unary;
+class Ternary;
 
 class Visitor
 {
@@ -18,6 +18,7 @@ class Visitor
         virtual InterpreterObject visitGroupingExpr(Grouping& expr) = 0;
         virtual InterpreterObject visitLiteralExpr(Literal& expr) = 0;
         virtual InterpreterObject visitUnaryExpr(Unary& expr) = 0;
+        virtual InterpreterObject visitTernaryExpr(Ternary& expr) = 0;
 };
 
 class Expr
@@ -67,6 +68,18 @@ class Unary : public Expr
 
     public:
         Unary(Token& oper, std::unique_ptr<Expr> right);
+        InterpreterObject accept(Visitor& visitor) override;
+};
+
+class Ternary : public Expr
+{
+    public:
+        std::unique_ptr<Expr> m_expression;
+        std::unique_ptr<Expr> m_thenExpr;
+        std::unique_ptr<Expr> m_elseExpr;
+
+    public:
+        Ternary(std::unique_ptr<Expr> expression, std::unique_ptr<Expr> thenExpr, std::unique_ptr<Expr> elseExpr);
         InterpreterObject accept(Visitor& visitor) override;
 };
 

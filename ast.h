@@ -2,7 +2,6 @@
 #define AST
 
 #include <memory>
-
 #include "scanner.h"
 #include "interpreterObject.h"
 
@@ -80,7 +79,7 @@ class Ternary : public Expr
         std::unique_ptr<Expr> m_elseExpr;
 
     public:
-        Ternary(std::unique_ptr<Expr> expr, std::unique_ptr<Expr> thenExpr, std::unique_ptr<Expr> elseExpr);
+        Ternary(std::unique_ptr<Expr> expression, std::unique_ptr<Expr> thenExpr, std::unique_ptr<Expr> elseExpr);
         InterpreterObject accept(Visitor& visitor) override;
 };
 
