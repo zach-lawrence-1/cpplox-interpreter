@@ -36,7 +36,6 @@ char Scanner::advance()
 
 void Scanner::addToken(TokenType type, std::string stringValue)
 {
-    //TODO: do something with stringValue in later steps/reorganization
     if (stringValue == "")
         stringValue = m_source.substr(m_start, m_current - m_start);
     m_tokens.push_back(Token(type, stringValue, m_line));
@@ -84,8 +83,8 @@ void Scanner::processString()
 
     advance();
 
-    //trim the quotes surrounding our string value
-    std::string stringValue = m_source.substr(m_start + 1, (m_current - 2 - m_start));
+    //TODO: keep the quotes surrounding our string value but strip them in interpreter object construction
+    std::string stringValue = m_source.substr(m_start, (m_current - m_start));
     addToken(TOKEN_STRING, stringValue);
 }
 

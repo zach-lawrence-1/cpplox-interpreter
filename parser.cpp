@@ -188,7 +188,8 @@ std::unique_ptr<Expr> Parser::primary()
     }
     else if (match({TOKEN_STRING}))
     {
-        InterpreterObject iO(previous().getLexeme());
+        std::string lexemeStringValue = previous().getLexeme();
+        InterpreterObject iO(lexemeStringValue.substr(1, lexemeStringValue.length() - 2));
         return std::make_unique<Literal>(iO);
     }
 
