@@ -12,14 +12,14 @@ class Print;
 class StmtVisitor
 {
     public:
-        virtual InterpreterObject visitExpressionStmt(Expression& expr) = 0;
-        virtual InterpreterObject visitPrintStmt(Print& expr) = 0;
+        virtual void visitExpressionStmt(Expression& expr) = 0;
+        virtual void visitPrintStmt(Print& expr) = 0;
 };
 
 class Stmt
 {
     public:
-        virtual InterpreterObject accept(StmtVisitor& visitor) = 0;
+        virtual void accept(StmtVisitor& visitor) = 0;
         virtual ~Stmt() = default;
 };
 
@@ -30,7 +30,7 @@ class Expression : public Stmt
 
     public:
         Expression(std::unique_ptr<Expr> expression);
-        InterpreterObject accept(StmtVisitor& visitor) override;
+        void accept(StmtVisitor& visitor) override;
 };
 
 class Print : public Stmt
@@ -40,7 +40,7 @@ class Print : public Stmt
 
     public:
         Print(std::unique_ptr<Expr> expression);
-        InterpreterObject accept(StmtVisitor& visitor) override;
+        void accept(StmtVisitor& visitor) override;
 };
 
 #endif

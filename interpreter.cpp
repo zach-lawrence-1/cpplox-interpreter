@@ -135,14 +135,30 @@ InterpreterObject Interpreter::visitTernaryExpr(Ternary& expr)
     return InterpreterObject();
 }
 
-//TODO: write tests testing the evaluation of different expressions and handling edge cases like div by zero
-void Interpreter::interpret(std::unique_ptr<Expr>& expr)
+void Interpreter::visitExpressionStmt(Expression& expr)
 {
-    InterpreterObject result = evaluate(expr);
-    
-    if (!runtimeErrorExists)
+    evaluate(expr.m_expression);
+}
+
+void Interpreter::visitPrintStmt(Print& expr)
+{
+    InterpreterObject value = evaluate(expr.m_expression);
+    std::cout << getObjectValueAsString(value) << std::endl;
+}
+
+//TODO: write tests testing the evaluation of different expressions and handling edge cases like div by zero
+void Interpreter::interpret(std::vector<std::unique_ptr<Stmt>>& statements)
+{
+    for (const auto& stmt : statements)
     {
-        std::string ostr = getObjectValueAsString(result);
-        std::cout << ostr << std::endl;
+        stmt->accept(*this);
+        
+        if (!runtimeErrorExists)
+        {
+            //std::string ostr = getObjectValueAsString(result);
+            //std::cout << ostr << std::endl;
+        }
+        else
+            break;
     }
 }

@@ -83,7 +83,6 @@ void Scanner::processString()
 
     advance();
 
-    //TODO: keep the quotes surrounding our string value but strip them in interpreter object construction
     std::string stringValue = m_source.substr(m_start, (m_current - m_start));
     addToken(TOKEN_STRING, stringValue);
 }

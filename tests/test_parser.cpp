@@ -3,31 +3,18 @@
 #include "./../scanner.h"
 #include "./../execution.h"
 
-//TODO: get rid of file test
-TEST(ParserTest, ParseSimpleFile)
+TEST(ParserTest, ParseSimpleExpressions)
 {
-    std::string allFileData = "";
-    std::ifstream fileReader("./../hello.cpplox");
+    std::string allFileData = "9 == 9;"
+                              "(\"hello\" + \"world\");"
+                              "(9 + 7) * 2 - 1 == (16 - 0) + (9 * 6) / 2;"
+                              "print \"hello\" + \" world\";"
+                              "print true;";
     
-    //TODO: restructure/refactor this
-    if (fileReader.is_open())
-    {
-        std::string currentLine = "";
-        
-        while (std::getline(fileReader, currentLine))
-        {
-            allFileData.append(currentLine + "\n");
-        }
-
-        fileReader.close();
-        Scanner scanner(allFileData);
-        std::vector<Token> tokens = scanner.scanTokens();
-        Parser parser(tokens);
-        std::unique_ptr<Expr> expression = parser.parse();
-        ASSERT_NE(expression, nullptr);
-
-        //TODO: test structure of the AST generated
-    }
-    
-    //TODO: add more tests, maybe check size of tokens vec before passing into parser
+    Scanner scanner(allFileData);
+    std::vector<Token> tokens = scanner.scanTokens();
+    Parser parser(tokens);
+    std::vector<std::unique_ptr<Stmt>> statements = parser.parse();
+    ASSERT_EQ(statements.size(), size_t(5));
+    //TODO: test structure of the AST generated, and add more tests
 }

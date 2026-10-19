@@ -5,9 +5,9 @@ Expression::Expression(std::unique_ptr<Expr> expression)
     m_expression = std::move(expression);
 }
 
-InterpreterObject Expression::accept(StmtVisitor& visitor)
+void Expression::accept(StmtVisitor& visitor)
 {
-    return visitor.visitExpressionStmt(*this);
+    visitor.visitExpressionStmt(*this);
 }
 
 Print::Print(std::unique_ptr<Expr> expression)
@@ -15,7 +15,7 @@ Print::Print(std::unique_ptr<Expr> expression)
     m_expression = std::move(expression);
 }
 
-InterpreterObject Print::accept(StmtVisitor& visitor)
+void Print::accept(StmtVisitor& visitor)
 {
-    return visitor.visitPrintStmt(*this);
+    visitor.visitPrintStmt(*this);
 }

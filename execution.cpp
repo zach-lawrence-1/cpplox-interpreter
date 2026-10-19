@@ -55,14 +55,14 @@ void run(const std::string& allFileData)
     Parser parser(tokens);
 
     //NOTE: for now, this only parses one expression/statement at a time. Given a file, it will only parse the first line of actual code
-    std::unique_ptr<Expr> expression = parser.parse();
+    std::vector<std::unique_ptr<Stmt>> statements = parser.parse();
 
     if (errorExists)
         return;
 
     Interpreter interprete;
 
-    interprete.interpret(expression);
+    interprete.interpret(statements);
     
     //AstPrinter printer;
 //

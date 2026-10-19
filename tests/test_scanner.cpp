@@ -103,7 +103,7 @@ TEST(ScannerTest, HandlesAllSingleTokensCorrectly)
         Token(TOKEN_COLON,         ":",  1),
 
         Token(TOKEN_IDENTIFIER,    "myVar",       1),
-        Token(TOKEN_STRING,        "a string",1),
+        Token(TOKEN_STRING,        "\"a string\"",1),
         Token(TOKEN_NUMBER,        "123.456",     1),
 
         Token(TOKEN_AND,    "and",    1),

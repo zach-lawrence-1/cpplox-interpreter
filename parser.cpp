@@ -12,6 +12,28 @@ std::unique_ptr<Expr> Parser::expression()
     return comma();
 }
 
+std::unique_ptr<Stmt> Parser::statement()
+{
+    if (match({TOKEN_PRINT}))
+        return printStatement();
+    
+    return expressionStatement();
+}
+
+std::unique_ptr<Stmt> Parser::printStatement()
+{
+    std::unique_ptr<Expr> value = expression();
+    consume(TOKEN_SEMICOLON, "Expected ';' after value");
+    return std::make_unique<Print>(std::move(value));
+}
+
+std::unique_ptr<Stmt> Parser::expressionStatement()
+{
+    std::unique_ptr<Expr> value = expression();
+    consume(TOKEN_SEMICOLON, "Expected ';' after expression");
+    return std::make_unique<Expression>(std::move(value));
+}
+
 std::unique_ptr<Expr> Parser::comma()
 {
     //NOTE: will need to make sure function definitions handle the chained commas not as an expression but as parameters
@@ -278,8 +300,14 @@ void Parser::synchronize()
     }
 }
 
-std::unique_ptr<Expr> Parser::parse()
+std::vector<std::unique_ptr<Stmt>> Parser::parse()
 {
-    //TODO: add a way to not exit the code in every case when a syntax error occurs, maybe use exceptions
-    return expression();
+    std::vector<std::unique_ptr<Stmt>> statements;
+    
+    while (!isAtEnd())
+    {
+        statements.push_back(statement());
+    }
+
+    return statements;
 }

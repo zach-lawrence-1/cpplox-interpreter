@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "scanner.h"
-#include "ast.h"
+#include "stmt.h"
 
 class Parser {
     private:
@@ -15,6 +15,9 @@ class Parser {
         Parser(std::vector<Token>& tokens);
         int getC() {return m_current;};
         std::unique_ptr<Expr> expression();
+        std::unique_ptr<Stmt> statement();
+        std::unique_ptr<Stmt> printStatement();
+        std::unique_ptr<Stmt> expressionStatement();
         std::unique_ptr<Expr> comma();
         std::unique_ptr<Expr> ternary();
         std::unique_ptr<Expr> equality();
@@ -23,7 +26,7 @@ class Parser {
         std::unique_ptr<Expr> factor();
         std::unique_ptr<Expr> unary();
         std::unique_ptr<Expr> primary();
-        std::unique_ptr<Expr> parse();
+        std::vector<std::unique_ptr<Stmt>> parse();
         bool match(const std::vector<TokenType>& types);
         bool check(TokenType type);
         Token advance();
