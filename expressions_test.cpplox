@@ -4,7 +4,7 @@
 9 + 2 * 7 / (1 - 91); //should return (+ 9.000000 (* 2.000000 (/ 7.000000 (group (- 1.000000 91.000000)))))
 (3 == 3); //should return (group (== 3 3))
 9 != (2 + 7); //should return (!= 9.000000 (group (+ 2.000000 7.000000)))
-(9 == 9) + (9 * (1 / 2.344)); //should return (+ (group (== 9.000000 9.000000)) (group (* 9.000000 (group (/ 1.000000 2.000000)))))
+(9) + (9 * (1 / 2.344)); //should return (+ (group (== 9.000000 9.000000)) (group (* 9.000000 (group (/ 1.000000 2.000000)))))
 "test" + "tree" + "beep"; //should return (+ (+ "test" "tree") "beep")
 
 /* Number of tokens should be 49 with these multiline comments
@@ -15,7 +15,7 @@
 */
 */
 
-/* * */ */
+/*/* * */ */
 
 ("left" == "right"), 10, true, (1); //should return (, (, (, (group (== "left" "right")) 10.000000) true) (group 1.000000))
 

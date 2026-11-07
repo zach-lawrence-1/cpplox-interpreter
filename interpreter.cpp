@@ -22,6 +22,11 @@ InterpreterObject Interpreter::visitBinaryExpr(Binary& expr)
     InterpreterObject right = evaluate(expr.m_right);
     Token oper = expr.m_oper;
 
+    if (oper.getType() == TOKEN_COMMA)
+    {
+        return InterpreterObject(right);
+    }
+
     if (left.getType() != right.getType())
     {
         runtimeError(oper, "Operand types do not match.");

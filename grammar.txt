@@ -1,11 +1,18 @@
 Context free grammar representation:
 
-program -> statement* EOF
+program -> declaration* EOF;
+
+declaration -> varDeclaration | statement;
+varDeclaration -> "var" IDENTIFIER ("=" expression)? ";";
+
 statement -> expressionStatement | printStatement;
 expressionStatement -> expression ";";
 printStatement -> "print" expression ";";
-expression -> literal | unary | binary | grouping | comma | ternary;
+
+expression -> literal | variable | unary | binary | grouping | comma | ternary;
+
 literal -> NUMBER | STRING | "true" | "false" | "null";
+variable -> IDENTIFIER;
 unary -> ( "-" | "!" ) expression;
 binary -> expression operator expression;
 grouping -> "(" expression ")";
@@ -15,12 +22,21 @@ operator -> "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/";
 
 Grammar representation with basic precedence implemented:
 
-expression -> comma
-comma -> ternary ("," ternary)*
-ternary -> equality ("?" ternary : ternary)?;
+program -> declaration* EOF
+
+declaration -> varDeclaration | statement
+varDeclaration -> "var" IDENTIFIER ( "=" ternary )? ";"
+
+statement -> expressionStatement | printStatement
+expressionStatement -> expression ";"
+printStatement -> "print" expression ";"
+
+expression -> comma;
+comma -> ternary ( "," ternary )*;
+ternary -> equality ( "?" expression ":" ternary )?;
 equality -> comparison ( ( "!=" | "==" ) comparison )*;
 comparison -> term ( ( ">" | ">=" | "<" | "<=" ) term )*;
 term -> factor ( ( "-" | "+" ) factor )*;
 factor -> unary ( ( "/" | "*" ) unary )*;
 unary -> ( "!" | "-" ) unary | primary;
-primary -> NUMBER | STRING | "true" | "false" | "null" | "(" expression ")";
+primary -> NUMBER | STRING | "true" | "false" | "null" | "(" expression ")" | IDENTIFIER;

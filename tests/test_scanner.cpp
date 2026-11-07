@@ -275,6 +275,26 @@ TEST_F(ScannerErrorTest, UnterminatedNestedMultiLineCommentReportsError)
     expectErrorContains(errorOutput, "Missing multiline comment closure");
 }
 
+TEST_F(ScannerErrorTest, TerminatedNestedMultiLineCommentSuccess)
+{
+    testing::internal::CaptureStderr();
+    Scanner scanner("/* outer /* inner comment closes */ */");
+    scanner.scanTokens();
+
+    EXPECT_TRUE(!errorExists);
+    std::string errorOutput = testing::internal::GetCapturedStderr();
+}
+
+TEST_F(ScannerErrorTest, TerminatedNestedMultiLineNewlinedCommentSuccess)
+{
+    testing::internal::CaptureStderr();
+    Scanner scanner("/*\n/*\ninner comment closes\n*/\n*/");
+    scanner.scanTokens();
+
+    EXPECT_TRUE(!errorExists);
+    std::string errorOutput = testing::internal::GetCapturedStderr();
+}
+
 TEST_F(ScannerErrorTest, UnterminatedStringReportsError)
 {
     testing::internal::CaptureStderr();
