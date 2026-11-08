@@ -8,12 +8,14 @@
 
 class Expression;
 class Print;
+class Var;
 
 class StmtVisitor
 {
     public:
         virtual void visitExpressionStmt(Expression& expr) = 0;
         virtual void visitPrintStmt(Print& expr) = 0;
+        virtual void visitVarStmt(Var& expr) = 0;
 };
 
 class Stmt
@@ -40,6 +42,17 @@ class Print : public Stmt
 
     public:
         Print(std::unique_ptr<Expr> expression);
+        void accept(StmtVisitor& visitor) override;
+};
+
+class Var : public Stmt
+{
+    public:
+        Token m_name;
+        std::unique_ptr<Expr> m_expression;
+
+    public:
+        Var(Token name, std::unique_ptr<Expr> expression);
         void accept(StmtVisitor& visitor) override;
 };
 

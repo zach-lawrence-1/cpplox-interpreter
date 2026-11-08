@@ -5,10 +5,13 @@
 
 #include "stmt.h"
 #include "interpreterObject.h"
+#include "environment.h"
 
 class Interpreter : public Visitor, public StmtVisitor
 {
     private:
+        Environment environment;
+
         InterpreterObject evaluate(std::unique_ptr<Expr>& expr);
         bool isTruthy(InterpreterObject& obj);
 
@@ -19,8 +22,10 @@ class Interpreter : public Visitor, public StmtVisitor
         InterpreterObject visitLiteralExpr(Literal& expr) override;
         InterpreterObject visitUnaryExpr(Unary& expr) override;
         InterpreterObject visitTernaryExpr(Ternary& expr) override;
-        void visitExpressionStmt(Expression& expr) override;
-        void visitPrintStmt(Print& expr) override;
+        InterpreterObject visitVariableExpr(Variable& expr) override;
+        void visitExpressionStmt(Expression& stmt) override;
+        void visitPrintStmt(Print& stmt) override;
+        void visitVarStmt(Var& stmt) override;
         void interpret(std::vector<std::unique_ptr<Stmt>>& statements);
 };
 

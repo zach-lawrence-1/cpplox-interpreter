@@ -54,3 +54,13 @@ InterpreterObject Ternary::accept(Visitor& visitor)
 {
     return visitor.visitTernaryExpr(*this);
 }
+
+Variable::Variable(Token& name)
+{
+    m_name = name;
+}
+
+InterpreterObject Variable::accept(Visitor& visitor)
+{
+    return visitor.visitVariableExpr(*this);
+}

@@ -14,10 +14,12 @@ class Parser {
     public:
         Parser(std::vector<Token>& tokens);
         int getC() {return m_current;};
-        std::unique_ptr<Expr> expression();
+        std::unique_ptr<Stmt> declaration();
+        std::unique_ptr<Stmt> varDeclaration();
         std::unique_ptr<Stmt> statement();
         std::unique_ptr<Stmt> printStatement();
         std::unique_ptr<Stmt> expressionStatement();
+        std::unique_ptr<Expr> expression();
         std::unique_ptr<Expr> comma();
         std::unique_ptr<Expr> ternary();
         std::unique_ptr<Expr> equality();

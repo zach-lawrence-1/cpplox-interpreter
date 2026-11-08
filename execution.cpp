@@ -45,7 +45,8 @@ void runtimeError(Token token, const std::string& message)
         reportRuntimeError(token.getLine(), " at '" + token.getLexeme() + "'", message);
 }
 
-void run(const std::string& allFileData)
+//TODO: fix this workaround where I include Interpreter instance
+void run(const std::string& allFileData, Interpreter& interprete)
 {
     Scanner scanner(allFileData);
     std::vector<Token> tokens = scanner.scanTokens();
@@ -54,13 +55,10 @@ void run(const std::string& allFileData)
 
     Parser parser(tokens);
 
-    //NOTE: for now, this only parses one expression/statement at a time. Given a file, it will only parse the first line of actual code
     std::vector<std::unique_ptr<Stmt>> statements = parser.parse();
 
     if (errorExists)
         return;
-
-    Interpreter interprete;
 
     interprete.interpret(statements);
     
@@ -82,6 +80,7 @@ void run(const std::string& allFileData)
 
 void promptCode()
 {
+    Interpreter interprete;
     for (;;)
     {
         std::cout << std::endl << "> ";
@@ -91,7 +90,7 @@ void promptCode()
         if (lineInput.empty())
             return;
         
-        run(lineInput);
+        run(lineInput, interprete);
         errorExists = false;
         runtimeErrorExists = false;
     }
@@ -99,6 +98,7 @@ void promptCode()
 
 void runFile(const std::string& file)
 {
+    Interpreter interprete;
     std::ifstream fileReader(file);
     
     if (fileReader.is_open())
@@ -112,7 +112,7 @@ void runFile(const std::string& file)
         }
 
         fileReader.close();
-        run(allFileData);
+        run(allFileData, interprete);
         
         if (errorExists)
             exit(-1);

@@ -10,6 +10,7 @@ class Grouping;
 class Literal;
 class Unary;
 class Ternary;
+class Variable;
 
 class Visitor
 {
@@ -19,6 +20,7 @@ class Visitor
         virtual InterpreterObject visitLiteralExpr(Literal& expr) = 0;
         virtual InterpreterObject visitUnaryExpr(Unary& expr) = 0;
         virtual InterpreterObject visitTernaryExpr(Ternary& expr) = 0;
+        virtual InterpreterObject visitVariableExpr(Variable& expr) = 0;
 };
 
 class Expr
@@ -80,6 +82,16 @@ class Ternary : public Expr
 
     public:
         Ternary(std::unique_ptr<Expr> expression, std::unique_ptr<Expr> thenExpr, std::unique_ptr<Expr> elseExpr);
+        InterpreterObject accept(Visitor& visitor) override;
+};
+
+class Variable : public Expr
+{
+    public:
+        Token m_name;
+
+    public:
+        Variable(Token& name);
         InterpreterObject accept(Visitor& visitor) override;
 };
 

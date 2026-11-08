@@ -7,9 +7,28 @@ Parser::Parser(std::vector<Token>& tokens)
     m_current = 0;
 }
 
-std::unique_ptr<Expr> Parser::expression()
+std::unique_ptr<Stmt> Parser::declaration()
 {
-    return comma();
+    if (match({TOKEN_VAR}))
+    {
+        return varDeclaration();
+    }
+
+    return statement();
+}
+
+std::unique_ptr<Stmt> Parser::varDeclaration()
+{
+    Token name = consume(TOKEN_IDENTIFIER, "Expect variable name");
+    std::unique_ptr<Expr> initialVarValue = nullptr;
+    
+    if (match({TOKEN_EQUAL}))
+    {
+        initialVarValue = expression();
+    }
+
+    consume(TOKEN_SEMICOLON, "Expected ';' after value");
+    return std::make_unique<Var>(name, std::move(initialVarValue));
 }
 
 std::unique_ptr<Stmt> Parser::statement()
@@ -32,6 +51,11 @@ std::unique_ptr<Stmt> Parser::expressionStatement()
     std::unique_ptr<Expr> value = expression();
     consume(TOKEN_SEMICOLON, "Expected ';' after expression");
     return std::make_unique<Expression>(std::move(value));
+}
+
+std::unique_ptr<Expr> Parser::expression()
+{
+    return comma();
 }
 
 std::unique_ptr<Expr> Parser::comma()
@@ -214,6 +238,11 @@ std::unique_ptr<Expr> Parser::primary()
         InterpreterObject iO(lexemeStringValue.substr(1, lexemeStringValue.length() - 2));
         return std::make_unique<Literal>(iO);
     }
+    else if (match({TOKEN_IDENTIFIER}))
+    {
+        Token identifier = previous();
+        return std::make_unique<Variable>(identifier);
+    }
 
     if (match({TOKEN_LEFT_PAREN}))
     {
@@ -252,7 +281,7 @@ std::unique_ptr<Expr> Parser::primary()
         return nullptr;
     }
 
-    error(peek(), "expected expression");
+    error(peek(), "Expected expression");
     return nullptr;
 }
 
@@ -306,7 +335,7 @@ std::vector<std::unique_ptr<Stmt>> Parser::parse()
     
     while (!isAtEnd())
     {
-        statements.push_back(statement());
+        statements.push_back(declaration());
     }
 
     return statements;

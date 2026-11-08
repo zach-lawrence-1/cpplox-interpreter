@@ -19,3 +19,14 @@ void Print::accept(StmtVisitor& visitor)
 {
     visitor.visitPrintStmt(*this);
 }
+
+Var::Var(Token name, std::unique_ptr<Expr> expression)
+{
+    m_name = name;
+    m_expression = std::move(expression);
+}
+
+void Var::accept(StmtVisitor& visitor)
+{
+    visitor.visitVarStmt(*this);
+}

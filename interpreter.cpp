@@ -130,25 +130,46 @@ InterpreterObject Interpreter::visitUnaryExpr(Unary& expr)
     return InterpreterObject();
 }
 
-//TODO: evaluate this
 InterpreterObject Interpreter::visitTernaryExpr(Ternary& expr)
 {
-    InterpreterObject elseExpr = evaluate(expr.m_elseExpr);
     InterpreterObject expression = evaluate(expr.m_expression);
+    InterpreterObject elseExpr = evaluate(expr.m_elseExpr);
     InterpreterObject thenExpr = evaluate(expr.m_thenExpr);
     
-    return InterpreterObject();
+    if (isTruthy(expression))
+    {
+        return thenExpr;
+    }
+
+    return elseExpr;
 }
 
-void Interpreter::visitExpressionStmt(Expression& expr)
+InterpreterObject Interpreter::visitVariableExpr(Variable& expr)
 {
-    evaluate(expr.m_expression);
+    return environment.get(expr.m_name);
 }
 
-void Interpreter::visitPrintStmt(Print& expr)
+void Interpreter::visitExpressionStmt(Expression& stmt)
 {
-    InterpreterObject value = evaluate(expr.m_expression);
+    evaluate(stmt.m_expression);
+}
+
+void Interpreter::visitPrintStmt(Print& stmt)
+{
+    InterpreterObject value = evaluate(stmt.m_expression);
     std::cout << getObjectValueAsString(value) << std::endl;
+}
+
+void Interpreter::visitVarStmt(Var& stmt)
+{
+    InterpreterObject value;
+
+    if (stmt.m_expression != nullptr)
+    {
+        value = evaluate(stmt.m_expression);
+    }
+
+    environment.define(stmt.m_name, value);
 }
 
 //TODO: write tests testing the evaluation of different expressions and handling edge cases like div by zero
